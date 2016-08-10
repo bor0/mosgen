@@ -8,10 +8,15 @@ The way it works is in a couple of steps. So let's get started with it:
 2. We need to create the average RGB values of all the files in X. We can do that by issuing the following command:
 `find X -name '*.png' -exec racket avg-rgb.rkt {} \; > avg-rgb-vals.txt`
 3. We need to figure out what our image input will be. Let's call its location Y.
-4. Let N be the size of the crop we will be doing to the source image (MxM). Generate the output by issuing the following command:
+4. Let N be the size of the crop we will be doing to the source image (NxN). Generate the output by issuing the following command:
 `racket build-mosaic.rkt Y N avg-rgb-vals.txt > mosaic.html`
 
-The above process will output an HTML file `mosaic.html` that contains references to all of the specified images in step 1 that match the best euclidean distance..
+The above process will output an HTML file `mosaic.html` that contains references to all of the specified images in step 1 that match the best Euclidean distance.
+
+Here is an example of a generatedmosaic using a library of 100 random images:
+
+![Example mosaic](example.jpg)
 
 Boro Sitnikovski
+
 August 2016
