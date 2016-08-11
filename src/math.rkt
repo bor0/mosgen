@@ -1,6 +1,7 @@
 #lang racket
-(provide avg-rgb calculate-all-distances calculate-least-distance)
-(require 2htdp/image)
+(provide avg-rgb calculate-least-distance)
+(require (only-in 2htdp/image
+                  color-red color-green color-blue))
 
 (define (avg-rgb color-list)
   (let ((length-color-list (length color-list)))
@@ -24,9 +25,14 @@
              (cdr second-color)))))
   (euclidean-distance-iter 0 first-color second-color))
 
-(define (calculate-all-distances color-list colors-list)
-  (map (lambda (x)
-         (cons (car x) (euclidean-distance color-list (cdr x)))) colors-list))
-
-(define (calculate-least-distance all-distances)
-  (car (sort all-distances (lambda (x y) (< (cdr x) (cdr y))))))
+(define (calculate-least-distance color-list colors-list)
+  (car (foldl
+        (lambda (item memo)
+          (define distance (euclidean-distance color-list (cdr item)))
+          (if
+           (< distance (cdr memo))
+           (cons (car item) distance)
+           memo))
+        (cons (car (car colors-list))
+              (euclidean-distance color-list (cdr (car colors-list)))) ; assume first element is best
+        (cdr colors-list))))

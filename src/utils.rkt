@@ -1,5 +1,5 @@
 #lang racket
-(provide args to-html read-avg-rgb-vals)
+(provide args find-files-recursively to-html read-avg-rgb-vals)
 
 (define-namespace-anchor anc)
 (define ns (namespace-anchor->namespace anc))
@@ -12,19 +12,23 @@
 
 (define (args) (vector->list (current-command-line-arguments)))
 
+(define (find-files-recursively directory)
+  (for/list ([f (in-directory directory)] #:when (regexp-match? "\\.png$" f))
+    f))
+
 (define (to-html list)
   (define square-size (number->string (car list)))
   (define (to-html-row row)
     (cond ((eq? row '()) "<br>\n")
           (else (string-append
-           "<img src='"
-           (third (car row))
-           "' width='"
-           square-size
-           "' height='"
-           square-size
-           "'>"
-           (to-html-row (cdr row))))))
+                 "<img src='"
+                 (third (car row))
+                 "' width='"
+                 square-size
+                 "' height='"
+                 square-size
+                 "'>"
+                 (to-html-row (cdr row))))))
   (foldr string-append "" (map to-html-row (cdr list))))
 
 (define (read-avg-rgb-vals file)

@@ -1,16 +1,18 @@
 #lang racket
-(require 2htdp/image)
-(require "src/math.rkt")
-(require "src/utils.rkt")
+(require (only-in 2htdp/image
+                  bitmap/file image->color-list))
+(require (only-in "src/math.rkt"
+                  avg-rgb))
+(require (only-in "src/utils.rkt"
+                  args find-files-recursively))
 
 ; main
 (begin
   (if (< (length (args)) 1)
       (begin
-        (display "usage: avg-rgb.rkt <image file>")
+        (display "usage: avg-rgb.rkt <images folder>")
         (newline))
       (begin
-        (print (cons
-                (car (args))
-                (avg-rgb (image->color-list (bitmap/file (car (args)))))))
-        (newline))))
+        (for ([f (find-files-recursively (car (args)))])
+          (print (cons (path->string f) (avg-rgb (image->color-list (bitmap/file f)))))
+          (newline)))))
