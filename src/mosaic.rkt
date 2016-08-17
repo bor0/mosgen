@@ -1,8 +1,12 @@
 #lang racket
-(provide build-mosaic)
-(require "math.rkt")
+(provide build-mosaic (struct-out mosaic) (struct-out mosaic-coord))
+(require (only-in "math.rkt"
+                  avg-rgb calculate-least-distance))
 (require (only-in 2htdp/image
                   image->color-list crop rotate image-width image-height))
+
+(define-struct mosaic (size data) #:transparent)
+(define-struct mosaic-coord (i j file))
 
 (define (calculate-mosaic-distance image square-size avg-rgbs x y)
   (define the-avg-rgb
@@ -21,6 +25,6 @@
   (define mosaic
     (for/list ([i vert-bound])
       (for/list ([j horiz-bound])
-        (list i j (calculate-mosaic-distance image square-size avg-rgbs j i)))))
+        (make-mosaic-coord i j (calculate-mosaic-distance image square-size avg-rgbs j i)))))
   
-  (cons square-size mosaic))
+  (make-mosaic square-size mosaic))
